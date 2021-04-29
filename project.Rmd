@@ -1,34 +1,85 @@
 ---
 title: "STA360 Final Project"
-output: html_document
+author: 
+- Martin Lim
+- Michael Xue
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyr)
 library(tidyverse)
+library(ggplot2)
+library(cowplot)
 ```
 
-```{r init-data}
+```{r echo=FALSE}
 data <- read.csv("data.csv")
-data <- mutate(data, )
 ```
 
-```{r}
+```{r echo=FALSE}
 data <- mutate(data, extraversion = E1 + (6-E2) + E3 + (6-E4) + E5 + (6-E6) + E7 + (6-E8) + E9 + (6-E10))
 data <- mutate(data, agreeableness = (6-A1) + A2 + (6-A3) + A4 + (6-A5) + A6 + (6-A7) + A8 + A9 + A10)
 data <- mutate(data, conscientiousness = C1 + (6-C2) + C3 + (6-C4) + C5 + (6-C6) + C7 + (6-C8) + C9 + C10)
-data <- mutate(data, emotional_stab = (6-N1) + N2 + (6-N3) + N4 + (6-N5) + (6-N6) + (6-N7) + (6-N8) + (6-N9) + 6-N10)
+data <- mutate(data, emotional_stability = (6-N1) + N2 + (6-N3) + N4 + (6-N5) + (6-N6) + (6-N7) + (6-N8) + (6-N9) + 6-N10)
 data <- mutate(data, intellect = O1 + (6-O2) + O3 + (6-O4) + O5 + (6-O6) + O7 + O8 + O9 + O10)
 ```
 
-```{r}
-hist(data$extraversion)
-hist(data$agreeableness)
-hist(data$conscientiousness)
-hist(data$emotional_stab)
-hist(data$intellect)
+```{r echo=FALSE, eval=FALSE}
+h1 <- ggplot(data, aes(x=extraversion)) +
+  geom_histogram(binwidth=2)
+h2 <- ggplot(data, aes(x=agreeableness)) +
+  geom_histogram(binwidth=2)
+h3 <- ggplot(data, aes(x=conscientiousness)) +
+  geom_histogram(binwidth=2)
+h4 <- ggplot(data, aes(x=emotional_stability)) +
+  geom_histogram(binwidth=2)
+h5 <- ggplot(data, aes(x=intellect)) +
+  geom_histogram(binwidth=2)
+title <- ggdraw() + 
+  draw_label("Distribution of Scores for Each Factor",
+             fontface="bold",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+p <- plot_grid(h1, h2, h3, h4, h5)
+plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
 ```
+
+# Introduction
+
+
+# Data
+The data comes from the Open-Source Psychometrics Project, which provides a collection of interactive personality tests. The data was collected in 2012 through an online personality test on the Open-Source Psychometrics Project website. Prior to starting the test, participants were informed that their responses would be recorded and used for research purposes, and consent to record their responses was confirmed after the test. This dataset contains 57 variables: 50 of these variables are the participants' answers to the 50 question Big Five personality test and 7 of these variables are additional demographic information about the participant. The participants answer the 50 questions on a scale of 1 to 5; 1 means that the participant finds the statement "Very Inaccurate", 3 means that the statement is "Neither Accurate Nor Inaccurate", and 5 means that the statement is "Very Accurate". The 7 demographic variables that are not factored into the personality test are: race, age, gender, handedness, the participant's country location, how the participant came to the test, and whether English is the participant's native language. The Big Five factors that this 50 question test measures are "extraversion", "agreeableness", "conscientiousness", "emotional stability", and "intellect". Each question on the test corresponds to only one of these factors, and each factor is defined by 10 questions. 
+
+The original dataset included 19719 observations, but one observation was removed as it was missing one of the variables. Given that each observation is the result of just one participant and there are still 19718 observations left, removing this one observation should not have any significant impact on our findings. From the 50 questions, additional variables were created to store the scores received in each of the Big Five factors. Scoring for the factors is computed as follows: each question corresponds to a single factor and is "+keyed" or "-keyed". For "+keyed" items, the response "Very Inaccurate" is assigned a value of 1, "Moderately Inaccurate" a value of 2, "Neither Inaccurate nor Accurate" a 3, "Moderately Accurate" a 4, and "Very Accurate" a value of 5. For "-keyed" items, the response "Very Inaccurate" is assigned a value of 5, "Moderately Inaccurate" a value of 4, "Neither Inaccurate nor Accurate" a 3, "Moderately Accurate" a 2, and "Very Accurate" a value of 1. Once values are calculated for each question, they should be summed to obtain the total score for that factor. Each factor can have a different number of ("+keyed", "-keyed") questions: extraversion (5, 5), agreeableness (6, 4), conscientiousness (6, 4), emotional stability (2, 8), intellect (3, 7). After obtaining a score for each factor on each observation, we found that scores were normally distributed for each factor, with agreeableness and intellect being a little left skewed. 
+
+```{r echo=FALSE}
+h1 <- ggplot(data, aes(x=extraversion)) +
+  geom_histogram(binwidth=2)
+h2 <- ggplot(data, aes(x=agreeableness)) +
+  geom_histogram(binwidth=2)
+h3 <- ggplot(data, aes(x=conscientiousness)) +
+  geom_histogram(binwidth=2)
+h4 <- ggplot(data, aes(x=emotional_stability)) +
+  geom_histogram(binwidth=2)
+h5 <- ggplot(data, aes(x=intellect)) +
+  geom_histogram(binwidth=2)
+title <- ggdraw() + 
+  draw_label("Distribution of Scores for Each Factor",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+p <- plot_grid(h1, h2, h3, h4, h5)
+plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
+```
+
+# Modeling
+
+# Results
+
+# Conclusion
 
 
 
