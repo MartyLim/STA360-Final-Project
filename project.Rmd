@@ -12,6 +12,8 @@ library(tidyr)
 library(tidyverse)
 library(ggplot2)
 library(cowplot)
+library(pixiedust)
+library(kableExtra)
 ```
 
 ```{r echo=FALSE}
@@ -122,7 +124,7 @@ cont_counts <- fulldata %>%
   count(continent) %>%
   arrange(desc(n))
 colnames(cont_counts) <- c("Continent", "Count")
-print.data.frame(cont_counts)
+dust(cont_counts)
 ```
 
 
