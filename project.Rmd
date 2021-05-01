@@ -155,9 +155,21 @@ Thus, in our prior for $\mathbf T$ and $\Psi$, we will set the diagonals to be 1
 
 4. Our prior for $\nu$ will be the minimum sample size that still satisfies $\nu > d - 1$, so we set $\nu = 5$.
 
-Now that we have established our priors, our modeling procedure is straightforward. We derive the full conditionals for $\mathbf \theta$ and $\mathbf\Sigma$ and find the following:
+Now that we have established our priors, our modeling procedure is straightforward. We derive the full conditionals for $\mathbf \theta$ and $\mathbf\Sigma$ and find the following expressions for them:
+$$
+\begin{equation}
+\boldsymbol{\theta} \sim MVN(\boldsymbol{\mu}^*(\mathbf{\Sigma}), \mathbf{T}^*(\mathbf{\Sigma})) \text{, where} \\
+\boldsymbol{\mu}^*(\mathbf{\Sigma}) = (\mathbf{T}^{-1} + n \mathbf{\Sigma}^{-1})^{-1} (n \mathbf{\Sigma}^{-1} \bar{\mathbf{y}} + \mathbf{T}^{-1} \boldsymbol{\mu}) \\
+\mathbf{T}^*(\mathbf{\Sigma}) = (\mathbf{T}^{-1} + n\mathbf{\Sigma}^{-1})^{-1} \\
+\text{and} \\
+\mathbf{\Sigma} \sim IW(\Psi^* (\boldsymbol{\theta}), \nu^*) \text{, where} \\
+\Psi^* (\boldsymbol{\theta}) = \Psi + n\mathbf{S}(\boldsymbol{\theta}) \\ 
+\mathbf{S}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{y}_i - \boldsymbol{\theta}) (\mathbf{y}_i - \boldsymbol{\theta})^T \\
+\nu^* = \nu + n
+\end{equation}
+$$
 
-We can then run a Gibbs sampler to find out posterior samples.
+We can then run a Gibbs sampler to find our posterior samples.
 
 ```{r functions}
 #### Simulate from the Wishart distribution
