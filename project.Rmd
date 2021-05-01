@@ -128,6 +128,22 @@ print.data.frame(cont_counts)
 
 # Modeling
 
+Our proposed Bayesian model framework is the MVN-MVN-IW (Multivariate Normal - Multivariate Normal - Inverse Wishart) model. This is because we assume our covariance matrix to be unknown, and we see in the EDA that the distribution of the score of each category seems to be roughly normal. Thus, it would make sense to model the vector of scores as a mean vector, and have the covariance matrix represent the variances of the categories on the diagonal and the covariances of the categories on the nondiagonals (it is possible for some of the categories to be correlated with one another, such as intellect and conscientiousness). In this framework, we have two independent priors, $\mathbf \theta$ and $\mathbf\Sigma$. As we want to create a weakly informative prior, we will assume the following:
+
+1. Each continent $i \in (1, 6)$ has the same mean for each of the Big Five personality trait scores. We will set this to be 30, since each category has 10 questions with a presumed average value of 3 (neutral response on a scale of 1-5). Thus, our prior value of $\mathbf \theta = [30, 30, 30, 30, 30]$.
+2. The Big Five personality traits are uncorrelated with one another. Thus we will set the off-diagonals of the prior covariance matrix to be 0.
+3. Each category's variance for score will be equal. We calculate this via the following. Let $Y$ be a random variable denoting the total score for one of the Big Five personality categories. Since each category's score is determined by ten questions, we can write $Y = X_1 + ... + X_{10}$, where each $X_i \sim U{1,5}$, where $X_i$ represents the score obtained for the $i$'th question, and $U{a,b}$ represents a Discrete Uniform distribution for values $a, a+1, ..., b-1, b$. In other words, we assume each $X_i$ is equally likely to be assigned scores between 1 and 5. Given that the variance of a Discrete Uniform is given by $\frac{n^2 - 1}{12}$, where $n = b - a + 1$, and we assume a weak positive correlation of $Corr(X_i, X_j) = 0.7$ for all $i \neq j$ (since each of these questions are within the same category, we can assume that scores for one question would be positively correlated with those for another), we derive the following:
+$$Var(Y) = Var(X_1 + ... + X_{10})\\
+= \sum_{i=1}^{10} Var(X_i) + \sum_{i \neq j} Cov(X_i, X_j)\\
+= 10 * \frac{5^2-1}{12} + 90 * 0.7 * \frac{5^2-1}{12}\\
+= 146$$
+
+Thus, in our prior covariance matrix, we will set the diagonals to be 146.
+
+Now that we have established our priors, our modeling procedure is straightforward. We derive the full conditionals for $\mathbf \theta$ and $\mathbf\Sigma$ and find the following:
+
+We can then run a Gibbs sampler to find out posterior samples.
+
 # Results
 
 # Conclusion
