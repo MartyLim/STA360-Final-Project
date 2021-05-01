@@ -119,6 +119,24 @@ p <- plot_grid(h1, h2, h3, h4, h5)
 plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
 ```
 
+```{r confints}
+# confidence intervals
+quantile(data$extraversion, c(0.025, 0.975))
+mean(data$extraversion)
+
+quantile(data$agreeableness, c(0.025, 0.975))
+mean(data$agreeableness)
+
+quantile(data$conscientiousness, c(0.025, 0.975))
+mean(data$conscientiousness)
+
+quantile(data$emotional_stability, c(0.025, 0.975))
+mean(data$emotional_stability)
+
+quantile(data$intellect, c(0.025, 0.975))
+mean(data$intellect)
+```
+
 In order to perform our Bayesian analysis on each of the continents separately, we must group our data frame by continent by using the country codes. To find the continent codes for each country, we imported a data frame from an outside source mapping country code to the corresponding continent code. We merged the two data frames together and selected only the necessary variables. The continents represented in the final data are North America (NA), Europe (EU), Asia (AS), Oceania (OC), Africa (AF), and South America (SA). 
 
 ```{r}
