@@ -14,6 +14,8 @@ library(ggplot2)
 library(cowplot)
 library(pixiedust)
 library(kableExtra)
+library(coda)
+library(gridExtra)
 ```
 
 ```{r echo=FALSE}
@@ -184,9 +186,7 @@ rmvnorm<-
     }
     res
   }
-```
 
-```{r gibbs}
 mu <- matrix(c(30, 30, 30, 30, 30), nrow=5)
 nu <- 5
 TT <- Psi <- matrix(c(146, 0, 0, 0, 0,
@@ -195,11 +195,14 @@ TT <- Psi <- matrix(c(146, 0, 0, 0, 0,
                 0, 0, 0, 146, 0,
                 0, 0, 0, 0, 146), nrow=5)
 S <- 10000
+```
+
+```{r na}
 n <- as.numeric(count(NA_data))
 
 ybar<-apply(NA_data,2,mean) #setting data
-Sigma<-cov(NA_data) ; THETA<-SIGMA<-NULL #setting initial parameters for Gibbs
-YS<-NULL
+Sigma<-cov(NA_data) ; THETAna<-SIGMAna<-NULL #setting initial parameters for Gibbs
+YSna<-NULL
 set.seed(1)
 
 for(s in 1:S) 
@@ -217,28 +220,328 @@ for(s in 1:S)
   ###
   
   ###prediction
-  YS<-rbind(YS,rmvnorm(1,theta,Sigma)) 
+  YSna<-rbind(YSna,rmvnorm(1,theta,Sigma)) 
   ###
   
   ### save results 
-  THETA<-rbind(THETA,theta) ; SIGMA<-rbind(SIGMA,c(Sigma))
+  THETAna<-rbind(THETAna,theta) ; SIGMAna<-rbind(SIGMAna,c(Sigma))
   ### print
   # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
+
+predna <- data.frame(YSna)
+colnames(predna) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+na1 <- ggplot(predna, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+na2 <- ggplot(predna, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+na3 <- ggplot(predna, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+na4 <- ggplot(predna, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+na5 <- ggplot(predna, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titlena <- ggdraw() + 
+  draw_label("Distribution of Scores in North America",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+na <- plot_grid(na1, na2, na3, na4, na5)
+plot_grid(titlena, na, ncol=1, rel_heights = c(0.1, 1))
 ```
 
-```{r trace}
-library(coda)
-plot(seq(10000), THETA[,2], type = "l")
-acf(THETA,lag.max=50)
-effectiveSize(THETA)
+```{r eu}
+n <- as.numeric(count(EU_data))
+
+ybar<-apply(EU_data,2,mean) #setting data
+Sigma<-cov(EU_data) ; THETAeu<-SIGMAeu<-NULL #setting initial parameters for Gibbs
+YSeu<-NULL
+set.seed(1)
+
+for(s in 1:S) 
+{
+  
+  ###update theta
+  TTst<-solve( solve(TT) + n*solve(Sigma) ) #solve = inverse
+  must<-TTst%*%( solve(TT)%*%mu + n*solve(Sigma)%*%ybar ) # %*% = matrix multiply
+  theta<-rmvnorm(1,must,TTst) #
+  ### 
+  
+  ###update Sigma
+  Psist <- Psi + ( t(EU_data)-c(theta) )%*%t( t(EU_data)-c(theta) ) 
+  Sigma<-solve(rwish(1, nu+n, solve(Psist)))
+  ###
+  
+  ###prediction
+  YSeu<-rbind(YSeu,rmvnorm(1,theta,Sigma)) 
+  ###
+  
+  ### save results 
+  THETAeu<-rbind(THETAeu,theta) ; SIGMAeu<-rbind(SIGMAeu,c(Sigma))
+  ### print
+  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
+}
+
+predeu <- data.frame(YSeu)
+colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+eu1 <- ggplot(predeu, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+eu5 <- ggplot(predeu, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titleeu <- ggdraw() + 
+  draw_label("Distribution of Scores in Europe",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 ```
+
+```{r as}
+n <- as.numeric(count(AS_data))
+
+ybar<-apply(AS_data,2,mean) #setting data
+Sigma<-cov(AS_data) ; THETAas<-SIGMAas<-NULL #setting initial parameters for Gibbs
+YSas<-NULL
+set.seed(1)
+
+for(s in 1:S) 
+{
+  
+  ###update theta
+  TTst<-solve( solve(TT) + n*solve(Sigma) ) #solve = inverse
+  must<-TTst%*%( solve(TT)%*%mu + n*solve(Sigma)%*%ybar ) # %*% = matrix multiply
+  theta<-rmvnorm(1,must,TTst) #
+  ### 
+  
+  ###update Sigma
+  Psist <- Psi + ( t(AS_data)-c(theta) )%*%t( t(AS_data)-c(theta) ) 
+  Sigma<-solve(rwish(1, nu+n, solve(Psist)))
+  ###
+  
+  ###prediction
+  YSas<-rbind(YSas,rmvnorm(1,theta,Sigma)) 
+  ###
+  
+  ### save results 
+  THETAas<-rbind(THETAas,theta) ; SIGMAas<-rbind(SIGMAas,c(Sigma))
+  ### print
+  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
+}
+
+predeu <- data.frame(YSas)
+colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+eu1 <- ggplot(predeu, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+eu5 <- ggplot(predeu, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titleeu <- ggdraw() + 
+  draw_label("Distribution of Scores in Europe",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+```
+
+```{r oc}
+n <- as.numeric(count(OC_data))
+
+ybar<-apply(OC_data,2,mean) #setting data
+Sigma<-cov(OC_data) ; THETAoc<-SIGMAoc<-NULL #setting initial parameters for Gibbs
+YSoc<-NULL
+set.seed(1)
+
+for(s in 1:S) 
+{
+  
+  ###update theta
+  TTst<-solve( solve(TT) + n*solve(Sigma) ) #solve = inverse
+  must<-TTst%*%( solve(TT)%*%mu + n*solve(Sigma)%*%ybar ) # %*% = matrix multiply
+  theta<-rmvnorm(1,must,TTst) #
+  ### 
+  
+  ###update Sigma
+  Psist <- Psi + ( t(OC_data)-c(theta) )%*%t( t(OC_data)-c(theta) ) 
+  Sigma<-solve(rwish(1, nu+n, solve(Psist)))
+  ###
+  
+  ###prediction
+  YSoc<-rbind(YSoc,rmvnorm(1,theta,Sigma)) 
+  ###
+  
+  ### save results 
+  THETAoc<-rbind(THETAoc,theta) ; SIGMAoc<-rbind(SIGMAoc,c(Sigma))
+  ### print
+  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
+}
+
+predeu <- data.frame(YSoc)
+colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+eu1 <- ggplot(predeu, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+eu5 <- ggplot(predeu, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titleeu <- ggdraw() + 
+  draw_label("Distribution of Scores in Europe",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+```
+
+```{r af}
+n <- as.numeric(count(AF_data))
+
+ybar<-apply(AF_data,2,mean) #setting data
+Sigma<-cov(AF_data) ; THETAaf<-SIGMAaf<-NULL #setting initial parameters for Gibbs
+YSaf<-NULL
+set.seed(1)
+
+for(s in 1:S) 
+{
+  
+  ###update theta
+  TTst<-solve( solve(TT) + n*solve(Sigma) ) #solve = inverse
+  must<-TTst%*%( solve(TT)%*%mu + n*solve(Sigma)%*%ybar ) # %*% = matrix multiply
+  theta<-rmvnorm(1,must,TTst) #
+  ### 
+  
+  ###update Sigma
+  Psist <- Psi + ( t(AF_data)-c(theta) )%*%t( t(AF_data)-c(theta) ) 
+  Sigma<-solve(rwish(1, nu+n, solve(Psist)))
+  ###
+  
+  ###prediction
+  YSaf<-rbind(YSaf,rmvnorm(1,theta,Sigma)) 
+  ###
+  
+  ### save results 
+  THETAaf<-rbind(THETAaf,theta) ; SIGMAaf<-rbind(SIGMAaf,c(Sigma))
+  ### print
+  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
+}
+
+predeu <- data.frame(YSaf)
+colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+eu1 <- ggplot(predeu, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+eu5 <- ggplot(predeu, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titleeu <- ggdraw() + 
+  draw_label("Distribution of Scores in Europe",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+```
+
+```{r sa}
+n <- as.numeric(count(SA_data))
+
+ybar<-apply(SA_data,2,mean) #setting data
+Sigma<-cov(SA_data) ; THETAsa<-SIGMAsa<-NULL #setting initial parameters for Gibbs
+YSsa<-NULL
+set.seed(1)
+
+for(s in 1:S) 
+{
+  
+  ###update theta
+  TTst<-solve( solve(TT) + n*solve(Sigma) ) #solve = inverse
+  must<-TTst%*%( solve(TT)%*%mu + n*solve(Sigma)%*%ybar ) # %*% = matrix multiply
+  theta<-rmvnorm(1,must,TTst) #
+  ### 
+  
+  ###update Sigma
+  Psist <- Psi + ( t(SA_data)-c(theta) )%*%t( t(SA_data)-c(theta) ) 
+  Sigma<-solve(rwish(1, nu+n, solve(Psist)))
+  ###
+  
+  ###prediction
+  YSsa<-rbind(YS,rmvnorm(1,theta,Sigma)) 
+  ###
+  
+  ### save results 
+  THETAsa<-rbind(THETAsa,theta) ; SIGMAsa<-rbind(SIGMAsa,c(Sigma))
+  ### print
+  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
+}
+
+predeu <- data.frame(YSsa)
+colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+eu1 <- ggplot(predeu, aes(x=extraversion)) +
+  geom_histogram(bindwidth=2)
+eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+  geom_histogram(bindwidth=2)
+eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+  geom_histogram(bindwidth=2)
+eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+  geom_histogram(bindwidth=2)
+eu5 <- ggplot(predeu, aes(x=intellect)) +
+  geom_histogram(bindwidth=2)
+titleeu <- ggdraw() + 
+  draw_label("Distribution of Scores in Europe",
+             x = 0,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+```
+
+
 
 # Results
 
 # Conclusion
 
+# Appendix
 
+```{r trace}
+plot(seq(10000), THETAna[,2], type = "l")
+acf(THETAna,lag.max=50)
+
+plot(seq(10000), THETAeu[,2], type = "l")
+acf(THETAeu,lag.max=50)
+
+plot(seq(10000), THETAas[,2], type = "l")
+acf(THETAas,lag.max=50)
+
+plot(seq(10000), THETAoc[,2], type = "l")
+acf(THETAoc,lag.max=50)
+
+plot(seq(10000), THETAaf[,2], type = "l")
+acf(THETAaf,lag.max=50)
+
+plot(seq(10000), THETAsa[,2], type = "l")
+acf(THETAsa,lag.max=50)
+```
 
 
 
