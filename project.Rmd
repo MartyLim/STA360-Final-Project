@@ -138,6 +138,8 @@ title <- ggdraw() +
 grid.arrange(title, h1, h2, h3, h4, h5)
 ```
 
+A limitation of the data is that the country variable represents the country in which the participant is taking the test from, which is not necessarily their country of residence. However, we can assume that the country variable does represent the country of residence of the participant in the vast majority of cases. Another limitation of the data is that these participants are most likely not going to be representative of the total population in these countries or continents. The participants represent those in these countries and continents who have access to internet and a device and are inclined to take such a personality test in English. A strength of our data from a modeling perspective is that the distribution of scores for personality categories is likely to be normally distributed.
+
 ```{r confints, include=FALSE}
 # confidence intervals
 quantile(data$extraversion, c(0.025, 0.975))
@@ -466,8 +468,10 @@ predsa <- mutate(predsa, continent="SA")
 
 An example autocorrelation and trace plot for the extraversion category in North America is shown below.
 
-```{r}
+```{r fig.width=5}
 plot(seq(10000), THETAna[,1], type = "l", xlab = "Sample Number", ylab = "Score for Extraversion")
+```
+```{r fig.width=5}
 acf(THETAna[,1],lag.max=50)
 ```
 
@@ -495,9 +499,9 @@ title <- ggdraw() +
 grid.arrange(title, c1, c2, c3, c4, c5)
 ```
 
-In comparison to the density plots for the distribution of data we showed earlier, these predictive distributions roughly match in terms of mean and range. Thus, our predictive check is passed. However, these predictive distributions are more normal, whereas the data density plots have some skewed behavior for agreeableness and intellect. This is a limitation of the MVN-MVN-IW model, as it influences the posterior and predictive distributions to reflect a more normal shape.
+In comparison to the density plots for the distribution of data we showed earlier, these predictive distributions roughly match in terms of mean and range. Thus, our predictive check is passed. However, these predictive distributions are more normal, whereas the data density plots have some skewed behavior for agreeableness and intellect. This is a limitation of the MVN-MVN-IW model, as it influences the posterior and predictive distributions to reflect a more normal shape. Another limitation is that for several of the continents, such as North America and Europe, the large number of observations causes the data to take significantly more precedence than the prior, and so our predictive distribution will naturally be very close to the distribution of the data itself. On the other hand, there is a discrepancy in the effect of the prior on our model between continents, as continents such as Africa and South America have much fewer observations.
 
-Below are the various 95\% confidence intervals for each of the personality category scores for each continent.
+Below are the various $95\%$ confidence intervals for each of the personality category scores for each continent.
 
 ```{r fig.align='center'}
 tab <- t(matrix(c("(11.49, 49.08)", "(24.69, 53.15)", "(19.35, 48.82)", "(12.05, 46.91)", "(27.26, 51.87)",
@@ -508,14 +512,35 @@ tab <- t(matrix(c("(11.49, 49.08)", "(24.69, 53.15)", "(19.35, 48.82)", "(12.05,
                 "(9.15, 44.13)", "(21.01, 50.02)", "(16.33, 43.77)", "(11.90, 42.65)", "(28.63, 52.65)"), ncol=6))
 colnames(tab) <- c("extraversion", "agreeableness", "conscientiousness", "em_stability", "intellect")
 rownames(tab) <- c("NA", "EU", "AS", "OC", "AF", "SA")
-as.table(tab)
+#as.table(tab)
+dust(data.frame(tab))
 ```
 
 From our initial observations of the predictive density plots as well as the confidence intervals, there does not seem to be a significant difference in the distributions of personality category scores between continents. To confirm this, we will answer three of the questions we posed above.
 
-# Interpretation/signifcance to psychologists
+```{r}
+mean(predna$extraversion > predsa$extraversion)
+mean(predaf$conscientiousness > predsa$conscientiousness)
+mean(predsa$intellect > predas$intellect)
+```
+
+Let $A$ represent the event that a predictive sample of extraversion score in North America is greater than a predictive sample of extraversion score in South America.
+
+Let $B$ represent the event that a predictive sample of conscientiousness score in Africa is greater than a predictive sample of conscientiousness score in South America.
+
+Let $C$ represent the event that a predictive sample of intellect score in South America is greater than a predictive sample of intellect score in Asia.
+
+Calculating these probabilities, we find that:
+$$P(A) = 0.6084$$
+$$P(B) = 0.6848$$
+$$P(C) = 0.661$$
+Based on the probability of these events, there is some, but perhaps not significant, evidence that the scores for these traits may differ between specific continents. This may suggest that different environments in continents could be responsible for these discrepancies. This could be useful to psychologists and cultural anthropologists who are investigating how different environments or other factors could affect the development of people's personalities and specific traits.
 
 # Conclusion
+
+Overall, our key findings are that prior research suggesting the impact of genetics and the environment on the Big Five personality traits is true to some extent, as we saw in our analysis. However, these differences are not clearly significant across continents. Nonetheless, our project may provide psychologists and cultural anthropologists with some useful information for how to analyze the effect of a certain variable on the development of people's personalities.
+
+Our project specifically looked into these personality differences across continents as our varying feature. However, other variables were also provided, such as age, gender, and whether English is the person's native language. A similar analysis as the one we have conducted in this project can be extended to these features as well, and more investigation should be done in order to determine what factors in particular have the largest effects on the development (or lack thereof) of the Big Five personality traits.
 
 # Appendix
 
