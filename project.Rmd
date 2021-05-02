@@ -121,7 +121,7 @@ p <- plot_grid(h1, h2, h3, h4, h5)
 plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
 ```
 
-```{r confints}
+```{r confints, include=FALSE}
 # confidence intervals
 quantile(data$extraversion, c(0.025, 0.975))
 mean(data$extraversion)
@@ -190,7 +190,9 @@ $$\Psi^* (\boldsymbol{\theta}) = \Psi + n\mathbf{S}(\boldsymbol{\theta})$$
 $$\mathbf{S}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{y}_i - \boldsymbol{\theta}) (\mathbf{y}_i - \boldsymbol{\theta})^T$$
 $$\nu^* = \nu + n$$
 
-For each of the six continents we are investigating, we can then run a Gibbs sampler to find our posterior samples of $\boldsymbol \theta$ and $\mathbf \Sigma$. We note that the autocorrelation and trace plots suggest that our Gibbs sampler is quite effective at producing independent samples. We then perform a predictive check to compare this distribution of scores with the distribution of scores reflected in the data.
+For each of the six continents we are investigating, we can then run a Gibbs sampler to find our posterior samples of $\boldsymbol \theta$ and $\mathbf \Sigma$. We note that the autocorrelation and trace plots in the appendex suggest that our Gibbs sampler is quite effective at producing independent samples. We then perform a predictive check to compare this distribution of scores with the distribution of scores reflected in the data.
+
+# Results
 
 ```{r functions}
 #### Simulate from the Wishart distribution
@@ -225,7 +227,7 @@ TT <- Psi <- matrix(c(146, 0, 0, 0, 0,
                 0, 0, 146, 0, 0,
                 0, 0, 0, 146, 0,
                 0, 0, 0, 0, 146), nrow=5)
-S <- 10000
+S <- 500
 ```
 
 ```{r na}
@@ -516,7 +518,7 @@ for(s in 1:S)
   ###
   
   ###prediction
-  YSsa<-rbind(YS,rmvnorm(1,theta,Sigma)) 
+  YSsa<-rbind(YSsa,rmvnorm(1,theta,Sigma)) 
   ###
   
   ### save results 
@@ -546,31 +548,27 @@ eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
 plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 ```
 
-
-
-# Results
-
 # Conclusion
 
 # Appendix
 
 ```{r trace}
-plot(seq(10000), THETAna[,2], type = "l")
+plot(seq(500), THETAna[,2], type = "l")
 acf(THETAna,lag.max=50)
 
-plot(seq(10000), THETAeu[,2], type = "l")
+plot(seq(500), THETAeu[,2], type = "l")
 acf(THETAeu,lag.max=50)
 
-plot(seq(10000), THETAas[,2], type = "l")
+plot(seq(500), THETAas[,2], type = "l")
 acf(THETAas,lag.max=50)
 
-plot(seq(10000), THETAoc[,2], type = "l")
+plot(seq(500), THETAoc[,2], type = "l")
 acf(THETAoc,lag.max=50)
 
-plot(seq(10000), THETAaf[,2], type = "l")
+plot(seq(500), THETAaf[,2], type = "l")
 acf(THETAaf,lag.max=50)
 
-plot(seq(10000), THETAsa[,2], type = "l")
+plot(seq(500), THETAsa[,2], type = "l")
 acf(THETAsa,lag.max=50)
 ```
 
