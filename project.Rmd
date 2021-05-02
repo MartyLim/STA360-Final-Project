@@ -589,7 +589,7 @@ title <- ggdraw() +
              x = -0.03,
              hjust=0) +
   theme(plot.margin = margin(0, 0, 0, 7))
-grid.arrange(title, h1, h2, h3, h4, h5)
+grid.arrange(title, c1, c2, c3, c4, c5)
 ```
 
 # Conclusion
