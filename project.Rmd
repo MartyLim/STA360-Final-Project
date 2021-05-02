@@ -16,6 +16,7 @@ library(pixiedust)
 library(kableExtra)
 library(coda)
 library(gridExtra)
+library(knitr)
 ```
 
 ```{r echo=FALSE}
@@ -468,10 +469,10 @@ predsa <- mutate(predsa, continent="SA")
 
 An example autocorrelation and trace plot for the extraversion category in North America is shown below.
 
-```{r fig.width=5}
+```{r fig.width=6.5}
 plot(seq(10000), THETAna[,1], type = "l", xlab = "Sample Number", ylab = "Score for Extraversion")
 ```
-```{r fig.width=5}
+```{r fig.width=6.5}
 acf(THETAna[,1],lag.max=50)
 ```
 
@@ -501,7 +502,7 @@ grid.arrange(title, c1, c2, c3, c4, c5)
 
 In comparison to the density plots for the distribution of data we showed earlier, these predictive distributions roughly match in terms of mean and range. Thus, our predictive check is passed. However, these predictive distributions are more normal, whereas the data density plots have some skewed behavior for agreeableness and intellect. This is a limitation of the MVN-MVN-IW model, as it influences the posterior and predictive distributions to reflect a more normal shape. Another limitation is that for several of the continents, such as North America and Europe, the large number of observations causes the data to take significantly more precedence than the prior, and so our predictive distribution will naturally be very close to the distribution of the data itself. On the other hand, there is a discrepancy in the effect of the prior on our model between continents, as continents such as Africa and South America have much fewer observations.
 
-Below are the various $95\%$ confidence intervals for each of the personality category scores for each continent.
+Below are the various 95\% confidence intervals for each of the personality category scores for each continent.
 
 ```{r fig.align='center'}
 tab <- t(matrix(c("(11.49, 49.08)", "(24.69, 53.15)", "(19.35, 48.82)", "(12.05, 46.91)", "(27.26, 51.87)",
@@ -513,12 +514,12 @@ tab <- t(matrix(c("(11.49, 49.08)", "(24.69, 53.15)", "(19.35, 48.82)", "(12.05,
 colnames(tab) <- c("extraversion", "agreeableness", "conscientiousness", "em_stability", "intellect")
 rownames(tab) <- c("NA", "EU", "AS", "OC", "AF", "SA")
 #as.table(tab)
-dust(data.frame(tab))
+kable(data.frame(tab))
 ```
 
 From our initial observations of the predictive density plots as well as the confidence intervals, there does not seem to be a significant difference in the distributions of personality category scores between continents. To confirm this, we will answer three of the questions we posed above.
 
-```{r}
+```{r include=FALSE}
 mean(predna$extraversion > predsa$extraversion)
 mean(predaf$conscientiousness > predsa$conscientiousness)
 mean(predsa$intellect > predas$intellect)
