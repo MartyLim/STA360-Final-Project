@@ -102,23 +102,40 @@ The data comes from the Open-Source Psychometrics Project, which provides a coll
 The original dataset included 19719 observations, but 378 observations were removed as they were missing the country variables. Given that each observation is the result of just one participant, removing these observations should not have any significant impact on our findings. From the 50 questions, additional variables were created to store the scores received in each of the Big Five factors. Scoring for the factors is computed as follows: each question corresponds to a single factor and is "+keyed" or "-keyed". For "+keyed" items, the response "Very Inaccurate" is assigned a value of 1, "Moderately Inaccurate" a value of 2, "Neither Inaccurate nor Accurate" a 3, "Moderately Accurate" a 4, and "Very Accurate" a value of 5. For "-keyed" items, the response "Very Inaccurate" is assigned a value of 5, "Moderately Inaccurate" a value of 4, "Neither Inaccurate nor Accurate" a 3, "Moderately Accurate" a 2, and "Very Accurate" a value of 1. Once values are calculated for each question, they should be summed to obtain the total score for that factor. Each factor can have a different number of ("+keyed", "-keyed") questions: extraversion (5, 5), agreeableness (6, 4), conscientiousness (6, 4), emotional stability (2, 8), intellect (3, 7). After obtaining a score for each factor on each observation, we found that scores were normally distributed for each factor, with agreeableness and intellect being a little left skewed. 
 
 ```{r echo=FALSE}
-h1 <- ggplot(data, aes(x=extraversion)) +
-  geom_histogram(binwidth=2)
-h2 <- ggplot(data, aes(x=agreeableness)) +
-  geom_histogram(binwidth=2)
-h3 <- ggplot(data, aes(x=conscientiousness)) +
-  geom_histogram(binwidth=2)
-h4 <- ggplot(data, aes(x=emotional_stability)) +
-  geom_histogram(binwidth=2)
-h5 <- ggplot(data, aes(x=intellect)) +
-  geom_histogram(binwidth=2)
+# h1 <- ggplot(data, aes(x=extraversion)) +
+#   geom_histogram(binwidth=2)
+# h2 <- ggplot(data, aes(x=agreeableness)) +
+#   geom_histogram(binwidth=2)
+# h3 <- ggplot(data, aes(x=conscientiousness)) +
+#   geom_histogram(binwidth=2)
+# h4 <- ggplot(data, aes(x=emotional_stability)) +
+#   geom_histogram(binwidth=2)
+# h5 <- ggplot(data, aes(x=intellect)) +
+#   geom_histogram(binwidth=2)
+# title <- ggdraw() + 
+  # draw_label("Distribution of Scores for Each Factor",
+  #            x = 0,
+  #            hjust=0) +
+  # theme(plot.margin = margin(0, 0, 0, 7))
+# p <- plot_grid(h1, h2, h3, h4, h5)
+# plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
+
+h1 <- ggplot(fulldata, aes(x=extraversion, fill=continent)) +
+  geom_density(alpha=0.2)
+h2 <- ggplot(fulldata, aes(x=agreeableness, fill=continent)) +
+  geom_density(alpha=0.2)
+h3 <- ggplot(fulldata, aes(x=conscientiousness, fill=continent)) +
+  geom_density(alpha=0.2)
+h4 <- ggplot(fulldata, aes(x=emotional_stability, fill=continent)) +
+  geom_density(alpha=0.2)
+h5 <- ggplot(fulldata, aes(x=intellect, fill=continent)) +
+  geom_density(alpha=0.2)
 title <- ggdraw() + 
-  draw_label("Distribution of Scores for Each Factor",
-             x = 0,
+  draw_label("Distribution of Scores",
+             x = -0.03,
              hjust=0) +
   theme(plot.margin = margin(0, 0, 0, 7))
-p <- plot_grid(h1, h2, h3, h4, h5)
-plot_grid(title, p, ncol=1, rel_heights = c(0.1, 1))
+grid.arrange(title, h1, h2, h3, h4, h5)
 ```
 
 In order to perform our Bayesian analysis on each of the continents separately, we must group our data frame by continent by using the country codes. To find the continent codes for each country, we imported a data frame from an outside source mapping country code to the corresponding continent code. We merged the two data frames together and selected only the necessary variables. The continents represented in the final data are North America (NA), Europe (EU), Asia (AS), Oceania (OC), Africa (AF), and South America (SA). 
@@ -244,23 +261,25 @@ for(s in 1:S)
 
 predna <- data.frame(YSna)
 colnames(predna) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-na1 <- ggplot(predna, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-na2 <- ggplot(predna, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-na3 <- ggplot(predna, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-na4 <- ggplot(predna, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-na5 <- ggplot(predna, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titlena <- ggdraw() + 
-  draw_label("Distribution of Scores in North America",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-na <- plot_grid(na1, na2, na3, na4, na5)
-plot_grid(titlena, na, ncol=1, rel_heights = c(0.1, 1))
+# na1 <- ggplot(predna, aes(x=extraversion)) +
+#   geom_density()
+# na1
+# na2 <- ggplot(predna, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# na3 <- ggplot(predna, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# na4 <- ggplot(predna, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# na5 <- ggplot(predna, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titlena <- ggdraw() + 
+#   draw_label("Distribution of Scores in North America",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# na <- plot_grid(na1, na2, na3, na4, na5)
+# plot_grid(titlena, na, ncol=1, rel_heights = c(0.1, 1))
+predna <- mutate(predna, continent="NA")
 ```
 
 ```{r eu}
@@ -297,23 +316,24 @@ for(s in 1:S)
 
 predeu <- data.frame(YSeu)
 colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-eu1 <- ggplot(predeu, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-eu5 <- ggplot(predeu, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titleeu <- ggdraw() + 
-  draw_label("Distribution of Scores in Europe",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+# eu1 <- ggplot(predeu, aes(x=extraversion)) +
+#   geom_histogram(bindwidth=2)
+# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# eu5 <- ggplot(predeu, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titleeu <- ggdraw() + 
+#   draw_label("Distribution of Scores in Europe",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predeu <- mutate(predeu, continent="EU")
 ```
 
 ```{r as}
@@ -348,25 +368,26 @@ for(s in 1:S)
   # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
-predeu <- data.frame(YSas)
-colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-eu1 <- ggplot(predeu, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-eu5 <- ggplot(predeu, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titleeu <- ggdraw() + 
-  draw_label("Distribution of Scores in Europe",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predas <- data.frame(YSas)
+colnames(predas) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+# eu1 <- ggplot(predeu, aes(x=extraversion)) +
+#   geom_histogram(bindwidth=2)
+# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# eu5 <- ggplot(predeu, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titleeu <- ggdraw() + 
+#   draw_label("Distribution of Scores in Europe",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predas <- mutate(predas, continent="AS")
 ```
 
 ```{r oc}
@@ -401,25 +422,26 @@ for(s in 1:S)
   # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
-predeu <- data.frame(YSoc)
-colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-eu1 <- ggplot(predeu, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-eu5 <- ggplot(predeu, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titleeu <- ggdraw() + 
-  draw_label("Distribution of Scores in Europe",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predoc <- data.frame(YSoc)
+colnames(predoc) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+# eu1 <- ggplot(predeu, aes(x=extraversion)) +
+#   geom_histogram(bindwidth=2)
+# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# eu5 <- ggplot(predeu, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titleeu <- ggdraw() + 
+#   draw_label("Distribution of Scores in Europe",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predoc <- mutate(predoc, continent="OC")
 ```
 
 ```{r af}
@@ -454,25 +476,26 @@ for(s in 1:S)
   # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
-predeu <- data.frame(YSaf)
-colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-eu1 <- ggplot(predeu, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-eu5 <- ggplot(predeu, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titleeu <- ggdraw() + 
-  draw_label("Distribution of Scores in Europe",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predaf <- data.frame(YSaf)
+colnames(predaf) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+# eu1 <- ggplot(predeu, aes(x=extraversion)) +
+#   geom_histogram(bindwidth=2)
+# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# eu5 <- ggplot(predeu, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titleeu <- ggdraw() + 
+#   draw_label("Distribution of Scores in Europe",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predaf <- mutate(predaf, continent="AF")
 ```
 
 ```{r sa}
@@ -498,7 +521,7 @@ for(s in 1:S)
   ###
   
   ###prediction
-  YSsa<-rbind(YS,rmvnorm(1,theta,Sigma)) 
+  YSsa<-rbind(YSsa,rmvnorm(1,theta,Sigma)) 
   ###
   
   ### save results 
@@ -507,27 +530,47 @@ for(s in 1:S)
   # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
-predeu <- data.frame(YSsa)
-colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-eu1 <- ggplot(predeu, aes(x=extraversion)) +
-  geom_histogram(bindwidth=2)
-eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-  geom_histogram(bindwidth=2)
-eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-  geom_histogram(bindwidth=2)
-eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-  geom_histogram(bindwidth=2)
-eu5 <- ggplot(predeu, aes(x=intellect)) +
-  geom_histogram(bindwidth=2)
-titleeu <- ggdraw() + 
-  draw_label("Distribution of Scores in Europe",
-             x = 0,
-             hjust=0) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predsa <- data.frame(YSsa)
+colnames(predsa) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
+# eu1 <- ggplot(predeu, aes(x=extraversion)) +
+#   geom_histogram(bindwidth=2)
+# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
+#   geom_histogram(bindwidth=2)
+# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
+#   geom_histogram(bindwidth=2)
+# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
+#   geom_histogram(bindwidth=2)
+# eu5 <- ggplot(predeu, aes(x=intellect)) +
+#   geom_histogram(bindwidth=2)
+# titleeu <- ggdraw() + 
+#   draw_label("Distribution of Scores in Europe",
+#              x = 0,
+#              hjust=0) +
+#   theme(plot.margin = margin(0, 0, 0, 7))
+# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
+# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
+predsa <- mutate(predsa, continent="SA")
 ```
 
+```{r}
+all_cont <- rbind(predna, predeu, predas, predoc, predaf, predsa)
+c1 <- ggplot(all_cont, aes(x=extraversion, fill=continent)) +
+  geom_density(alpha=0.2)
+c2 <- ggplot(all_cont, aes(x=agreeableness, fill=continent)) +
+  geom_density(alpha=0.2)
+c3 <- ggplot(all_cont, aes(x=conscientiousness, fill=continent)) +
+  geom_density(alpha=0.2)
+c4 <- ggplot(all_cont, aes(x=emotional_stability, fill=continent)) +
+  geom_density(alpha=0.2)
+c5 <- ggplot(all_cont, aes(x=intellect, fill=continent)) +
+  geom_density(alpha=0.2)
+title <- ggdraw() + 
+  draw_label("Predictive Distribution of Scores",
+             x = -0.03,
+             hjust=0) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+grid.arrange(title, h1, h2, h3, h4, h5)
+```
 
 
 # Results
