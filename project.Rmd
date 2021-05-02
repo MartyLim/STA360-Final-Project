@@ -244,7 +244,7 @@ TT <- Psi <- matrix(c(146, 0, 0, 0, 0,
                 0, 0, 146, 0, 0,
                 0, 0, 0, 146, 0,
                 0, 0, 0, 0, 146), nrow=5)
-S <- 500
+S <- 10000
 ```
 
 ```{r na}
@@ -597,22 +597,22 @@ grid.arrange(title, c1, c2, c3, c4, c5)
 # Appendix
 
 ```{r trace}
-plot(seq(500), THETAna[,2], type = "l")
+plot(seq(10000), THETAna[,2], type = "l")
 acf(THETAna,lag.max=50)
 
-plot(seq(500), THETAeu[,2], type = "l")
+plot(seq(10000), THETAeu[,2], type = "l")
 acf(THETAeu,lag.max=50)
 
-plot(seq(500), THETAas[,2], type = "l")
+plot(seq(10000), THETAas[,2], type = "l")
 acf(THETAas,lag.max=50)
 
-plot(seq(500), THETAoc[,2], type = "l")
+plot(seq(10000), THETAoc[,2], type = "l")
 acf(THETAoc,lag.max=50)
 
-plot(seq(500), THETAaf[,2], type = "l")
+plot(seq(10000), THETAaf[,2], type = "l")
 acf(THETAaf,lag.max=50)
 
-plot(seq(500), THETAsa[,2], type = "l")
+plot(seq(10000), THETAsa[,2], type = "l")
 acf(THETAsa,lag.max=50)
 ```
 
