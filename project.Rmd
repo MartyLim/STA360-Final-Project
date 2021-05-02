@@ -206,15 +206,14 @@ $$\mathbf{\Sigma} \sim IW(\Psi^* (\boldsymbol{\theta}), \nu^*) \text{, where}$$
 $$\Psi^* (\boldsymbol{\theta}) = \Psi + n\mathbf{S}(\boldsymbol{\theta})$$ 
 $$\mathbf{S}(\boldsymbol{\theta}) = \frac{1}{n} \sum_{i=1}^n (\mathbf{y}_i - \boldsymbol{\theta}) (\mathbf{y}_i - \boldsymbol{\theta})^T$$
 $$\nu^* = \nu + n$$
-
-For each of the six continents we are investigating, we can then run a Gibbs sampler to find our posterior samples of $\boldsymbol \theta$ and $\mathbf \Sigma$. We note that the autocorrelation and trace plots in the Appendix suggest that our Gibbs sampler is quite effective at producing independent samples. We provide an example autocorrelation and trace plot for the extraversion category in North America below.
+For each of the six continents we are investigating, we can then run a Gibbs sampler to find our posterior samples of $\boldsymbol \theta$ and $\mathbf \Sigma$. We note that the autocorrelation and trace plots in the Appendix suggest that our Gibbs sampler is quite effective at producing independent samples. We provide an example autocorrelation and trace plot for the extraversion category in North America in the results section.
 
 We then perform a predictive check to compare this distribution of scores with the distribution of scores reflected in the data. To do so, we take the posterior samples of $\boldsymbol \theta$ and $\mathbf \Sigma$, use our sampling model (MVN) with those parameters to get predictive samples, and plot density plots for each category for each continent. Our goal here is to check that our modeling approach is sound by making sure that the predictive distributions do not deviate too far from the data; in fact, they should be close to the distributions of the data given our weakly informative prior. 
 
 In addition, we hope to use our predictive distributions to give us insight into our initial research question of whether the scores for these personality traits differ between continents. We can get an initial idea of this through our density plots, as well as confidence intervals for the scores of each trait for each continent. To look into this further, however, we can use our predictive samples to calculate probabilities that the scores of a certain trait differ between continents. Based on our predictive density plots, as well as our initial data density plots, some questions we seek to answer are:
 
 1. Do people in North America score higher on extraversion compared to people in South America?
-2. Do people in Europe score higher on conscientiousness compared to people in South America?
+2. Do people in Africa score higher on conscientiousness compared to people in South America?
 3. Do people in South America score higher on intellect compared to people in Asia?
 
 # Results
@@ -283,30 +282,10 @@ for(s in 1:S)
   
   ### save results 
   THETAna<-rbind(THETAna,theta) ; SIGMAna<-rbind(SIGMAna,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predna <- data.frame(YSna)
 colnames(predna) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# na1 <- ggplot(predna, aes(x=extraversion)) +
-#   geom_density()
-# na1
-# na2 <- ggplot(predna, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# na3 <- ggplot(predna, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# na4 <- ggplot(predna, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# na5 <- ggplot(predna, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titlena <- ggdraw() + 
-#   draw_label("Distribution of Scores in North America",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# na <- plot_grid(na1, na2, na3, na4, na5)
-# plot_grid(titlena, na, ncol=1, rel_heights = c(0.1, 1))
 predna <- mutate(predna, continent="NA")
 ```
 
@@ -338,29 +317,10 @@ for(s in 1:S)
   
   ### save results 
   THETAeu<-rbind(THETAeu,theta) ; SIGMAeu<-rbind(SIGMAeu,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predeu <- data.frame(YSeu)
 colnames(predeu) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# eu1 <- ggplot(predeu, aes(x=extraversion)) +
-#   geom_histogram(bindwidth=2)
-# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# eu5 <- ggplot(predeu, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titleeu <- ggdraw() + 
-#   draw_label("Distribution of Scores in Europe",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 predeu <- mutate(predeu, continent="EU")
 ```
 
@@ -392,29 +352,10 @@ for(s in 1:S)
   
   ### save results 
   THETAas<-rbind(THETAas,theta) ; SIGMAas<-rbind(SIGMAas,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predas <- data.frame(YSas)
 colnames(predas) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# eu1 <- ggplot(predeu, aes(x=extraversion)) +
-#   geom_histogram(bindwidth=2)
-# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# eu5 <- ggplot(predeu, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titleeu <- ggdraw() + 
-#   draw_label("Distribution of Scores in Europe",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 predas <- mutate(predas, continent="AS")
 ```
 
@@ -446,29 +387,10 @@ for(s in 1:S)
   
   ### save results 
   THETAoc<-rbind(THETAoc,theta) ; SIGMAoc<-rbind(SIGMAoc,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predoc <- data.frame(YSoc)
 colnames(predoc) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# eu1 <- ggplot(predeu, aes(x=extraversion)) +
-#   geom_histogram(bindwidth=2)
-# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# eu5 <- ggplot(predeu, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titleeu <- ggdraw() + 
-#   draw_label("Distribution of Scores in Europe",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 predoc <- mutate(predoc, continent="OC")
 ```
 
@@ -500,29 +422,10 @@ for(s in 1:S)
   
   ### save results 
   THETAaf<-rbind(THETAaf,theta) ; SIGMAaf<-rbind(SIGMAaf,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predaf <- data.frame(YSaf)
 colnames(predaf) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# eu1 <- ggplot(predeu, aes(x=extraversion)) +
-#   geom_histogram(bindwidth=2)
-# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# eu5 <- ggplot(predeu, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titleeu <- ggdraw() + 
-#   draw_label("Distribution of Scores in Europe",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 predaf <- mutate(predaf, continent="AF")
 ```
 
@@ -554,31 +457,23 @@ for(s in 1:S)
   
   ### save results 
   THETAsa<-rbind(THETAsa,theta) ; SIGMAsa<-rbind(SIGMAsa,c(Sigma))
-  ### print
-  # cat(s,round(theta,2),round(c(Sigma),2),"\n")
 }
 
 predsa <- data.frame(YSsa)
 colnames(predsa) <- c("extraversion", "agreeableness", "conscientiousness", "emotional_stability", "intellect")
-# eu1 <- ggplot(predeu, aes(x=extraversion)) +
-#   geom_histogram(bindwidth=2)
-# eu2 <- ggplot(predeu, aes(x=agreeableness)) +
-#   geom_histogram(bindwidth=2)
-# eu3 <- ggplot(predeu, aes(x=conscientiousness)) +
-#   geom_histogram(bindwidth=2)
-# eu4 <- ggplot(predeu, aes(x=emotional_stability)) +
-#   geom_histogram(bindwidth=2)
-# eu5 <- ggplot(predeu, aes(x=intellect)) +
-#   geom_histogram(bindwidth=2)
-# titleeu <- ggdraw() + 
-#   draw_label("Distribution of Scores in Europe",
-#              x = 0,
-#              hjust=0) +
-#   theme(plot.margin = margin(0, 0, 0, 7))
-# eu <- plot_grid(eu1, eu2, eu3, eu4, eu5)
-# plot_grid(titlena, eu, ncol=1, rel_heights = c(0.1, 1))
 predsa <- mutate(predsa, continent="SA")
 ```
+
+An example autocorrelation and trace plot for the extraversion category in North America is shown below.
+
+```{r}
+plot(seq(10000), THETAna[,1], type = "l", xlab = "Sample Number", ylab = "Score for Extraversion")
+acf(THETAna[,1],lag.max=50)
+```
+
+As we can see, our Gibbs sampler mixes quite well and has low autocorrelation, so we can assume that our samples are relatively independent of one another. Because our Gibbs sampler seems to converge very quickly, we decided that a burn-in period would not be necessary.
+
+Using the posterior distribution of $\boldsymbol \theta$ and $\mathbf \Sigma$, we sampled from the multivariate normal distribution to obtain the predictive distribution of scores in each personality category for each continent. The density plots for these predictive distributions are shown below.
 
 ```{r}
 all_cont <- rbind(predna, predeu, predas, predoc, predaf, predsa)
@@ -599,6 +494,26 @@ title <- ggdraw() +
   theme(plot.margin = margin(0, 0, 0, 7))
 grid.arrange(title, c1, c2, c3, c4, c5)
 ```
+
+In comparison to the density plots for the distribution of data we showed earlier, these predictive distributions roughly match in terms of mean and range. Thus, our predictive check is passed. However, these predictive distributions are more normal, whereas the data density plots have some skewed behavior for agreeableness and intellect. This is a limitation of the MVN-MVN-IW model, as it influences the posterior and predictive distributions to reflect a more normal shape.
+
+Below are the various 95\% confidence intervals for each of the personality category scores for each continent.
+
+```{r fig.align='center'}
+tab <- t(matrix(c("(11.49, 49.08)", "(24.69, 53.15)", "(19.35, 48.82)", "(12.05, 46.91)", "(27.26, 51.87)",
+                "(12.20, 48.59)", "(23.01, 52.34)", "(18.39, 46.12)", "(11.35, 45.53)", "(28.02, 51.74)",
+                "(13.55, 45.03)", "(25.92, 49.51)", "(19.92, 46.81)", "(12.46, 43.23)", "(24.86, 48.89)",
+                "(12.11, 49.38)", "(24.45, 52.71)", "(17.46, 46.94)", "(12.55, 45.95)", "(27.00, 51.58)",
+                "(12.84, 47.42)", "(25.30, 53.32)", "(20.70, 49.81)", "(12.39, 48.17)", "(27.35, 51.64)",
+                "(9.15, 44.13)", "(21.01, 50.02)", "(16.33, 43.77)", "(11.90, 42.65)", "(28.63, 52.65)"), ncol=6))
+colnames(tab) <- c("extraversion", "agreeableness", "conscientiousness", "em_stability", "intellect")
+rownames(tab) <- c("NA", "EU", "AS", "OC", "AF", "SA")
+as.table(tab)
+```
+
+From our initial observations of the predictive density plots as well as the confidence intervals, there does not seem to be a significant difference in the distributions of personality category scores between continents. To confirm this, we will answer three of the questions we posed above.
+
+# Interpretation/signifcance to psychologists
 
 # Conclusion
 
